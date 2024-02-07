@@ -6,7 +6,7 @@ const cors = require("cors");
 const PORT = 8000;
 app.use(express.json());
 app.use(cookieParser());
-const docClient = require("./sevices/authentication");
+
 app.use(cors({
     origin: ["http://localhost:8000"],
     credentials: true
@@ -21,5 +21,5 @@ app.use(cors({
 // const docClient = new AWS.DynamoDB.DocumentClient();
 
 app.use('/auth', require('./routes/authRouter'));
-// app.use('/server', require('./routes/serverRouter'));
+app.use('/channel', require('./routes/channelRouter'));
 app.listen(PORT, () => console.log('Server started on port:'+ PORT));

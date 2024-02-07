@@ -1,6 +1,6 @@
 class message{
-    constructor(message, sender) {
-        this.message = message;
+    constructor(text, sender) {
+        this.text = text;
         this.sender = sender;
         this.time = new Date().getTime().toString();
     }

@@ -92,9 +92,9 @@ authRouter.get("/login", async (req, res) => {
         if (!user)
             return res.status(400).json({ errorMessage: "No account with this email" });
         const token = jwt.sign({
-            User : user.email
+            email : user.email,
         }, process.env.JWT_SECRET);
-        return res.status(200).cookie(token).send("User fetched");
+        return res.status(200).cookie("token", token, {}).send(true);
     } catch (error) {
         console.error("Error getting user:", error);
         res.status(500).json({ errorMessage: "Error getting user" });

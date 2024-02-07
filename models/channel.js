@@ -2,14 +2,14 @@ const docClient = require("../sevices/authentication");
 const message = require("./message");
 
 class channel{
-    constructor(channelName,createdBy){
+    constructor(channelName,isPublic,createdBy){
         this.channelName = channelName;
         this.createdBy = createdBy;
         this.messages = [];
-        this.isPublic=true;
+        this.isPublic=isPublic;
         this.privateMembers = [];
     }
-    async putMessage(channelName,message){
+    static async putMessage(channelName,message){
         return new Promise((resolve, reject) => {
             const params = {
                 TableName: "channels",
@@ -36,7 +36,7 @@ class channel{
             });
         });
     }
-    async getMessages(channelName){
+    static async getMessages(channelName){
         return new Promise((resolve, reject) => {
             const params = {
                 TableName: 'channels',
@@ -56,8 +56,8 @@ class channel{
             });
         });
     }
-    
-    async createNewChannel(channelName,isPublic,createdBy){
+
+    static async createNewChannel(channelName,isPublic,createdBy,privateMembers=[]){
         return new Promise((resolve, reject) => {
             const params = {
                 TableName: "channels",
@@ -65,7 +65,8 @@ class channel{
                     channelName: channelName,
                     isPublic: isPublic,
                     createdBy: createdBy,
-                    messages: []
+                    messages: [],
+                    privateMembers : privateMembers
                 }
             };
             docClient.put(params, (err, data) => {
@@ -79,7 +80,25 @@ class channel{
             });
         });
     }
+    static async getChannel(channelName){
+        return new Promise((resolve, reject) => {
+            const params = {
+                TableName: 'channels',
+                Key: {
+                    'channelName': channelName
+                }
+            };
+    
+            docClient.get(params, (err, data) => {
+                if (err) {
+                    console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
+                    reject(err);
+                } else {
+                    console.log("GetItem succeeded:", JSON.stringify(data, null, 2));
+                    resolve(data.Item);
+                }
+            });
+        });
+    }
 }
-
-channel.createNewChannel("private","admin");
 module.exports = channel;
